@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicProgressController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,5 +17,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+// 認証ルート（Breeze）
+require __DIR__.'/auth.php';
+
+// 顧客専用公開URL（認証不要）
+Route::get('/progress/{uuid}', [PublicProgressController::class, 'show'])
+    ->name('public.progress');
 
 require __DIR__.'/auth.php';
