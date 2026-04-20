@@ -63,7 +63,7 @@ class Client extends Model
         };
     }
 
-    public function age(): int
+    public function getAgeAttribute(): int
     {
         return $this->birth_date->age;
     }

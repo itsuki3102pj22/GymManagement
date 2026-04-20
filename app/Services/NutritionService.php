@@ -51,11 +51,11 @@ class NutritionService
         };
 
         return [
-            'bmi' => '$bmi',
-            'label' => '$label',
-            'in_range' => '$bmi >= $targetMin && $bmi <= $targetMax',
-            'target_min' => '$targetMin',
-            'target_max' => '$targetMax',
+            'bmi' => $bmi,
+            'label' => $label,
+            'in_range' => $bmi >= $targetMin && $bmi <= $targetMax,
+            'target_min' => $targetMin,
+            'target_max' => $targetMax,
         ];
     }
 
@@ -64,7 +64,7 @@ class NutritionService
      */
     public function calcEer(Client $client): ?int
     {
-        $age = $client->age();
+        $age = $client->age;
         $gender = $client->gender === 1 ? 'meal' : 'female'; // 性別判定
         $pal = $client->pal_level - 1;
 
