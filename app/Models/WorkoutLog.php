@@ -36,7 +36,7 @@ class WorkoutLog extends Model
     {
         parent::boot();
         static::saving(function (WorkoutLog $log) {
-            $log->total_volume = $log->weight * $log->rep * $log->sets;
+            $log->total_volume = $log->weight * $log->reps * $log->sets;
         });
     }
 
@@ -52,7 +52,7 @@ class WorkoutLog extends Model
 
     public function client()
     {
-        return $this->belongsTo(client::class);
+        return $this->belongsTo(Client::class);
     }
 
     public function menu()

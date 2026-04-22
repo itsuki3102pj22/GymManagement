@@ -37,14 +37,31 @@ class ClientController extends Controller
         $latestStat  = $client->latestBodyStat;
         $eer         = $this->nutrition->calcEer($client);
         $bmiData     = null;
+        $targetRange = ['min' => 0, 'max' => 0];
 
         if ($latestStat) {
             $bmi     = $this->nutrition->calcBmi($latestStat->weight, $client->height);
-            $bmiData = $this->nutrition->bmiStatus($bmi, $client->age());
+            $bmiData = $this->nutrition->bmiStatus($bmi, $client->age);
         }
 
+        // 目標BMI体重範囲を計算
+        if ($bmiData) {
+            $heightM = $client->height / 100;
+            $targetRange = [
+                'min' => round($bmiData['target_min'] * ($heightM ** 2), 1),
+                'max' => round($bmiData['target_max'] * ($heightM ** 2), 1),
+            ];
+        }
+
+        // 最近のトレーニングログを取得
+        $recentWorkouts = $client->workoutLogs()
+            ->with('menu')
+            ->latest('logged_at')
+            ->limit(10)
+            ->get();
+
         return view('clients.show', compact(
-            'client', 'progress', 'latestStat', 'eer', 'bmiData'
+            'client', 'progress', 'latestStat', 'eer', 'bmiData', 'targetRange', 'recentWorkouts'
         ));
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BodyStatController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -20,6 +21,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 顧客管理（トレーナー・責任者共通）
     Route::resource('clients', ClientController::class);
+
+    // 体の計測ログ管理
+    Route::post('/clients/{client}/body-stats', [BodyStatController::class, 'store'])
+        ->name('body-stats.store');
+    Route::delete('/clients/{client}/body-stats/{bodyStat}', [BodyStatController::class, 'destroy'])
+        ->name('body-stats.destroy');
 
     // プロフィール管理
     Route::get('/profile', [ProfileController::class, 'edit'])
