@@ -3,19 +3,23 @@
         <div class="flex justify-between items-center">
             <div>
                 <a href="{{ route('clients.index') }}"
-                   class="text-sm text-gray-400 hover:text-gray-600">← 顧客一覧</a>
+                    class="text-sm text-gray-400 hover:text-gray-600">← 顧客一覧</a>
                 <h2 class="font-semibold text-xl text-gray-800 mt-1">
                     {{ $client->name }} さん
                 </h2>
             </div>
             <div class="flex gap-3">
                 <a href="{{ route('public.progress', $client->uuid) }}"
-                   target="_blank"
-                   class="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">
+                    target="_blank"
+                    class="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">
                     公開URL ↗
                 </a>
+                <a href="{{ route('workout-logs.create', $client) }}"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
+                    + トレーニング記録
+                </a>
                 <a href="{{ route('clients.edit', $client) }}"
-                   class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
                     編集
                 </a>
             </div>
@@ -189,13 +193,13 @@
                         計測データ入力
                     </h3>
                     <form action="{{ route('body-stats.store', $client) }}" method="POST"
-                          class="space-y-4">
+                        class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">計測日</label>
                             <input type="date" name="measured_at"
-                                   value="{{ old('measured_at', today()->format('Y-m-d')) }}"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
+                                value="{{ old('measured_at', today()->format('Y-m-d')) }}"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
                                           focus:outline-none focus:ring-2 focus:ring-blue-300">
                             @error('measured_at')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -204,8 +208,8 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">体重 (kg) *</label>
                             <input type="number" name="weight" step="0.1" min="20" max="300"
-                                   value="{{ old('weight') }}" placeholder="60.0"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
+                                value="{{ old('weight') }}" placeholder="60.0"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
                                           focus:outline-none focus:ring-2 focus:ring-blue-300">
                             @error('weight')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -214,19 +218,19 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">体脂肪率 (%)</label>
                             <input type="number" name="body_fat_percentage" step="0.1" min="1" max="70"
-                                   value="{{ old('body_fat_percentage') }}" placeholder="20.0"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
+                                value="{{ old('body_fat_percentage') }}" placeholder="20.0"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
                                           focus:outline-none focus:ring-2 focus:ring-blue-300">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">筋肉量 (kg)</label>
                             <input type="number" name="muscle_mass" step="0.1" min="10" max="150"
-                                   value="{{ old('muscle_mass') }}" placeholder="38.0"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
+                                value="{{ old('muscle_mass') }}" placeholder="38.0"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
                                           focus:outline-none focus:ring-2 focus:ring-blue-300">
                         </div>
                         <button type="submit"
-                                class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm
+                            class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm
                                        font-medium hover:bg-blue-700 transition">
                             記録する
                         </button>
@@ -274,12 +278,12 @@
                                     </td>
                                     <td class="py-2 text-right">
                                         <form action="{{ route('body-stats.destroy', [$client, $stat]) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('この計測データを削除しますか？')">
+                                            method="POST"
+                                            onsubmit="return confirm('この計測データを削除しますか？')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                    class="text-red-400 hover:text-red-600 text-xs">
+                                                class="text-red-400 hover:text-red-600 text-xs">
                                                 削除
                                             </button>
                                         </form>
@@ -365,100 +369,131 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script>
-    (function () {
-        const actual   = @json($progress['actual']);
-        const forecast = @json($progress['forecast']);
-        const target   = {{ $client->target_weight ?? 'null' }};
+        (function() {
+            const ctx = document.getElementById('weightChart');
+            const actual = @json($progress['actual']);
+            const forecast = @json($progress['forecast']);
+        const target = {{ $client->target_weight ?? 'null' }};
+            const allWeights = [
+                ...actual.map(p => p.y),
+                ...forecast.map(p => p.y),
+                target,
+            ].filter(v => v !== null);
 
-        const ctx = document.getElementById('weightChart');
-        if (!ctx) return;
+            const yMin = allWeights.length ? Math.floor(Math.min(...allWeights) - 2) : 40;
+            const yMax = allWeights.length ? Math.ceil(Math.max(...allWeights) + 2) : 100;
 
-        const allWeights = [
-            ...actual.map(p => p.y),
-            ...forecast.map(p => p.y),
-            target,
-        ].filter(v => v !== null);
-
-        const yMin = allWeights.length ? Math.floor(Math.min(...allWeights) - 2) : 40;
-        const yMax = allWeights.length ? Math.ceil(Math.max(...allWeights)  + 2) : 100;
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [
-                    {
-                        label: '実績体重',
-                        data: actual,
-                        parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59,130,246,0.07)',
-                        fill: true,
-                        tension: 0.35,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#3b82f6',
-                        borderWidth: 2.5,
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                            label: '実績体重',
+                            data: actual,
+                            parsing: {
+                                xAxisKey: 'x',
+                                yAxisKey: 'y'
+                            },
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59,130,246,0.07)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6',
+                            borderWidth: 2.5,
+                        },
+                        {
+                            label: '予測体重',
+                            data: forecast,
+                            parsing: {
+                                xAxisKey: 'x',
+                                yAxisKey: 'y'
+                            },
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'transparent',
+                            borderDash: [6, 4],
+                            tension: 0.35,
+                            pointRadius: 2,
+                            pointBackgroundColor: '#f59e0b',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
                     },
-                    {
-                        label: '予測体重',
-                        data: forecast,
-                        parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'transparent',
-                        borderDash: [6, 4],
-                        tension: 0.35,
-                        pointRadius: 2,
-                        pointBackgroundColor: '#f59e0b',
-                        borderWidth: 2,
-                        fill: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
                     },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: { unit: 'week', displayFormats: { week: 'M/d' } },
-                        grid: { color: 'rgba(0,0,0,0.04)' },
-                        ticks: { color: '#94a3b8', font: { size: 11 } },
-                    },
-                    y: {
-                        min: yMin,
-                        max: yMax,
-                        grid: { color: 'rgba(0,0,0,0.04)' },
-                        ticks: {
-                            color: '#94a3b8',
-                            font: { size: 11 },
-                            callback: v => v + ' kg',
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'week',
+                                displayFormats: {
+                                    week: 'M/d'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.04)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 11
+                                }
+                            },
+                        },
+                        y: {
+                            min: yMin,
+                            max: yMax,
+                            grid: {
+                                color: 'rgba(0,0,0,0.04)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 11
+                                },
+                                callback: v => v + ' kg',
+                            },
                         },
                     },
                 },
-            },
-            plugins: [{
-                id: 'targetLine',
-                afterDraw(chart) {
-                    if (target === null) return;
-                    const { ctx, scales: { x, y } } = chart;
-                    const yPos = y.getPixelForValue(target);
-                    ctx.save();
-                    ctx.strokeStyle = '#10b981';
-                    ctx.lineWidth = 1.5;
-                    ctx.setLineDash([4, 4]);
-                    ctx.beginPath();
-                    ctx.moveTo(x.left, yPos);
-                    ctx.lineTo(x.right, yPos);
-                    ctx.stroke();
-                    ctx.fillStyle = '#10b981';
-                    ctx.font = '11px sans-serif';
-                    ctx.fillText(`目標 ${target}kg`, x.right - 72, yPos - 5);
-                    ctx.restore();
-                },
-            }],
-        });
-    })();
+                plugins: [{
+                    id: 'targetLine',
+                    afterDraw(chart) {
+                        if (target === null) return;
+                        const {
+                            ctx,
+                            scales: {
+                                x,
+                                y
+                            }
+                        } = chart;
+                        const yPos = y.getPixelForValue(target);
+                        ctx.save();
+                        ctx.strokeStyle = '#10b981';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.moveTo(x.left, yPos);
+                        ctx.lineTo(x.right, yPos);
+                        ctx.stroke();
+                        ctx.fillStyle = '#10b981';
+                        ctx.font = '11px sans-serif';
+                        ctx.fillText(`目標 ${target}kg`, x.right - 72, yPos - 5);
+                        ctx.restore();
+                    },
+                }],
+            });
+        })();
     </script>
 
 </x-app-layout>
