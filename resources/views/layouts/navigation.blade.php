@@ -15,6 +15,9 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('menus.index')" :active="request()->routeIs('menus.*')">
+                        種目マスタ
+                    </x-nav-link>
                 </div>
             </div>
 

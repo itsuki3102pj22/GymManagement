@@ -66,9 +66,10 @@ class ClientController extends Controller
     }
 
     // 顧客登録フォーム
-    public function create()
+    public function create(Request $request)
     {
-        return view('clients.create');
+        $trainers = User::where('role', 1)->orderBy('name')->get();
+        return view('clients.create', compact('trainers'));
     }
 
     // 顧客登録処理
@@ -98,7 +99,8 @@ class ClientController extends Controller
     public function edit(Request $request, Client $client)
     {
         $this->authorizeClient($request->user(), $client);
-        return view('clients.edit', compact('client'));
+        $trainers = User::where('role', 1)->orderBy('name')->get();
+        return view('clients.edit', compact('client', 'trainers'));
     }
 
     // 顧客更新処理

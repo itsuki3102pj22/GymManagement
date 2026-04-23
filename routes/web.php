@@ -5,6 +5,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProgressController;
+use App\Http\Controllers\WorkoutLogController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SupervisorController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +38,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
+    // トレーニング記録
+    Route::get(
+        'clients/{client}/workout-logs/create',
+        [WorkoutLogController::class, 'create']
+    )->name('workout-logs.create');
+    Route::post(
+        'clients/{client}/workout-logs',
+        [WorkoutLogController::class, 'store']
+    )->name('workout-logs.store');
+    Route::delete(
+        'clients/{client}/workout-logs/{workoutLog}',
+        [WorkoutLogController::class, 'destroy']
+    )->name('workout-logs.destroy');
+
+    // 種目マスタ
+    Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
+    Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
+    Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
+
     // 責任者専用
     Route::middleware('role:supervisor')->prefix('supervisor')->group(function () {
         Route::get('/', [SupervisorController::class, 'index'])
@@ -43,4 +64,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

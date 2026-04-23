@@ -12,13 +12,13 @@ class Menu extends Model
     protected $fillable = [
         'name',
         'category',
-        'is_suctom',
+        'is_custom',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_cuntom' => 'boolean',
+            'is_custom' => 'boolean',
         ];
     }
 
