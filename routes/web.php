@@ -8,6 +8,7 @@ use App\Http\Controllers\PublicProgressController;
 use App\Http\Controllers\WorkoutLogController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SupervisorController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 
 // 顧客専用公開URL（認証不要）
@@ -56,6 +57,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
     Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
     Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
+
+    //　予約管理
+    Route::resource('reservations', ReservationController::class)
+        ->only(['index', 'store', 'update', 'destroy']);
 
     // 責任者専用
     Route::middleware('role:supervisor')->prefix('supervisor')->group(function () {
