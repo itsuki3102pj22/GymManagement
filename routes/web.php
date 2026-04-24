@@ -9,6 +9,8 @@ use App\Http\Controllers\WorkoutLogController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\FoodMasterController;
+use App\Http\Controllers\FoodLogController;
 use Illuminate\Support\Facades\Route;
 
 // 顧客専用公開URL（認証不要）
@@ -61,6 +63,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //　予約管理
     Route::resource('reservations', ReservationController::class)
         ->only(['index', 'store', 'update', 'destroy']);
+
+    // 食品マスタ
+    Route::get('food-master', [FoodMasterController::class, 'index'])
+        ->name('food-master.index');
+    Route::post('food-master', [FoodMasterController::class, 'store'])
+        ->name('food-master.store');
+    Route::put('food-master/{foodMaster}', [FoodMasterController::class, 'update'])
+        ->name('food-master.update');
+    Route::delete('food-master/{foodMaster}', [FoodMasterController::class, 'destroy'])
+        ->name('food-master.destroy');
+
+    // 食事ログ
+    Route::get('clients/{client}/food-logs', [FoodLogController::class, 'index'])
+        ->name('food-logs.index');
+    Route::get('clients/{client}/food-logs/create', [FoodLogController::class, 'create'])
+        ->name('food-logs.create');
+    Route::post('clients/{client}/food-logs', [FoodLogController::class, 'store'])
+        ->name('food-logs.store');
+    Route::delete('clients/{client}/food-logs/{foodLog}', [FoodLogController::class, 'destroy'])
+        ->name('food-logs.destroy');
 
     // 責任者専用
     Route::middleware('role:supervisor')->prefix('supervisor')->group(function () {
