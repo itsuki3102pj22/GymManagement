@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('menus.index')" :active="request()->routeIs('menus.*')">
                         種目マスタ
                     </x-nav-link>
+                    <x-nav-link :href="route('food-master.index')" :active="request()->routeIs('food-master.*')">
+                        食品マスタ
+                    </x-nav-link>
                     <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')">
                         予約カレンダー
                     </x-nav-link>

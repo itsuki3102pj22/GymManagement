@@ -11,11 +11,14 @@ class FoodLog extends Model
 
     protected $fillable = [
         'client_id',
-        'meal_taxt',
+        'meal_text',
         'total_calories',
-        'p_barance',
-        'f_barance',
-        'c_barance',
+        'p_balance',
+        'f_balance',
+        'c_balance',
+        'protein_grams',
+        'fat_grams',
+        'carbs_grams',
         'logged_at',
     ];
 
@@ -24,9 +27,12 @@ class FoodLog extends Model
         return [
             'logged_at' => 'date',
             'total_calories' => 'integer',
-            'p_barance' => 'float',
-            'f_barance' => 'float',
-            'c_barance' => 'float',
+            'p_balance' => 'float',
+            'f_balance' => 'float',
+            'c_balance' => 'float',
+            'protein_grams' => 'float',
+            'fat_grams' => 'float',
+            'carbs_grams' => 'float',
         ];
     }
 

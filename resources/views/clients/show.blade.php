@@ -18,6 +18,10 @@
                     class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
                     + トレーニング記録
                 </a>
+                <a href="{{ route('food-logs.index', $client) }}"
+                    class="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">
+                    食事ログ
+                </a>
                 <a href="{{ route('clients.edit', $client) }}"
                     class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
                     編集
