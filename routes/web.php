@@ -11,6 +11,7 @@ use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FoodMasterController;
 use App\Http\Controllers\FoodLogController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // 顧客専用公開URL（認証不要）
@@ -83,6 +84,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('food-logs.store');
     Route::delete('clients/{client}/food-logs/{foodLog}', [FoodLogController::class, 'destroy'])
         ->name('food-logs.destroy');
+
+    // ユーザー管理（責任者のみ）
+    Route::resource('users', UserController::class)
+        ->except(['show']);
 
     // 責任者専用
     Route::middleware('role:supervisor')->prefix('supervisor')->group(function () {
