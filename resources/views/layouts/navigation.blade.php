@@ -15,6 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(auth()->user()->isSupervisor())
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        ユーザー管理
+                    </x-nav-link>
+                    @endif
                     <x-nav-link :href="route('menus.index')" :active="request()->routeIs('menus.*')">
                         種目マスタ
                     </x-nav-link>
