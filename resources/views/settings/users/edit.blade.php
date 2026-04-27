@@ -1,56 +1,61 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $user->name }} さんの編集
-        </h2>
+        <div>
+            <a href="{{ route('users.index') }}"
+               class="text-sm" style="color:var(--text-muted)">← ユーザー管理</a>
+            <h2 class="font-display mt-1"
+                style="font-size:26px;font-weight:400;color:var(--navy);letter-spacing:1px">
+                {{ $user->name }} さんを編集
+            </h2>
+        </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-lg mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow-sm p-6">
+    <div class="py-6">
+        <div class="max-w-lg mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="rounded-2xl p-6 bg-white"
+                 style="border:1px solid var(--card-border);border-top:3px solid var(--gold)">
+                <p class="text-xs font-semibold tracking-widest uppercase mb-5"
+                   style="color:var(--gold)">アカウント情報を更新</p>
                 <form action="{{ route('users.update', $user) }}"
-                      method="POST" class="space-y-5">
+                      method="POST" class="space-y-4">
                     @csrf
                     @method('PUT')
                     @include('settings.users._form', ['user' => $user])
 
-                    {{-- パスワード変更（任意） --}}
-                    <div class="border-t pt-4">
-                        <p class="text-xs text-gray-400 mb-3">
+                    <div class="rounded-xl p-4 space-y-4"
+                         style="background:var(--surface);border:1px solid var(--card-border)">
+                        <p class="text-xs" style="color:var(--text-muted)">
                             パスワードを変更する場合のみ入力してください
                         </p>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-sm text-gray-600 mb-1">
-                                    新しいパスワード
-                                </label>
-                                <input type="password" name="password"
-                                       class="w-full border border-gray-200 rounded-lg px-3 py-2
-                                              text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                @error('password')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm text-gray-600 mb-1">
-                                    新しいパスワード（確認）
-                                </label>
-                                <input type="password" name="password_confirmation"
-                                       class="w-full border border-gray-200 rounded-lg px-3 py-2
-                                              text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1.5"
+                                   style="color:var(--text-muted)">新しいパスワード</label>
+                            <input type="password" name="password"
+                                   class="w-full rounded-xl px-4 py-2.5 text-sm"
+                                   style="border:1px solid var(--card-border);color:var(--navy)">
+                            @error('password')
+                            <p class="text-xs mt-1" style="color:#dc2626">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1.5"
+                                   style="color:var(--text-muted)">新しいパスワード（確認）</label>
+                            <input type="password" name="password_confirmation"
+                                   class="w-full rounded-xl px-4 py-2.5 text-sm"
+                                   style="border:1px solid var(--card-border);color:var(--navy)">
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-2">
+                    <div class="flex justify-end gap-3 pt-2"
+                         style="border-top:1px solid var(--card-border)">
                         <a href="{{ route('users.index') }}"
-                           class="border border-gray-300 text-gray-600 px-5 py-2
-                                  rounded-lg text-sm hover:bg-gray-50">
+                           class="px-5 py-2 rounded-xl text-sm"
+                           style="border:1px solid var(--card-border);color:var(--text-secondary)">
                             キャンセル
                         </a>
                         <button type="submit"
-                                class="bg-blue-600 text-white px-5 py-2 rounded-lg
-                                       text-sm hover:bg-blue-700">
+                                class="px-6 py-2 rounded-xl text-sm font-semibold text-white"
+                                style="background:var(--royal)">
                             更新する
                         </button>
                     </div>

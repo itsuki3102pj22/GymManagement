@@ -38,6 +38,7 @@ class ClientController extends Controller
         $eer         = $this->nutrition->calcEer($client);
         $bmiData     = null;
         $targetRange = ['min' => 0, 'max' => 0];
+        $pfcStatus   = null;
 
         if ($latestStat) {
             $bmi     = $this->nutrition->calcBmi($latestStat->weight, $client->height);
@@ -60,8 +61,20 @@ class ClientController extends Controller
             ->limit(10)
             ->get();
 
+        // 今日のフードログから PFC ステータスを計算
+        $todayFoodLogs = $client->foodLogs()
+            ->whereDate('logged_at', now())
+            ->get();
+
+        if ($todayFoodLogs->isNotEmpty()) {
+            $p_total = $todayFoodLogs->sum('p_balance');
+            $f_total = $todayFoodLogs->sum('f_balance');
+            $c_total = $todayFoodLogs->sum('c_balance');
+            $pfcStatus = $this->nutrition->pfcStatus($p_total, $f_total, $c_total);
+        }
+
         return view('clients.show', compact(
-            'client', 'progress', 'latestStat', 'eer', 'bmiData', 'targetRange', 'recentWorkouts'
+            'client', 'progress', 'latestStat', 'eer', 'bmiData', 'targetRange', 'recentWorkouts', 'pfcStatus'
         ));
     }
 
