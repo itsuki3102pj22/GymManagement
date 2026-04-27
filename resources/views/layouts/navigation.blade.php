@@ -1,112 +1,159 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+<nav x-data="{ open: false }" class="bg-white sticky top-0 z-50"
+     style="border-bottom: 1px solid var(--card-border);">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-14">
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    @if(auth()->user()->isSupervisor())
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                        ユーザー管理
-                    </x-nav-link>
-                    @endif
-                    <x-nav-link :href="route('menus.index')" :active="request()->routeIs('menus.*')">
-                        種目マスタ
-                    </x-nav-link>
-                    <x-nav-link :href="route('food-master.index')" :active="request()->routeIs('food-master.*')">
-                        食品マスタ
-                    </x-nav-link>
-                    <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')">
-                        予約カレンダー
-                    </x-nav-link>
-                </div>
+            {{-- ロゴ --}}
+            <a href="{{ route('dashboard') }}"
+               class="font-display text-2xl tracking-widest"
+               style="color:var(--navy);font-weight:400;letter-spacing:4px">
+                PG<span style="color:var(--gold)">M</span>S
+            </a>
+
+            {{-- デスクトップナビ --}}
+            <div class="hidden md:flex items-center gap-1">
+                @foreach([
+                    ['route' => 'dashboard',        'label' => 'ダッシュボード'],
+                    ['route' => 'clients.index',    'label' => '顧客管理'],
+                    ['route' => 'reservations.index','label' => '予約'],
+                    ['route' => 'food-master.index', 'label' => '食品マスタ'],
+                    ['route' => 'menus.index',       'label' => '種目マスタ'],
+                ] as $item)
+                <a href="{{ route($item['route']) }}"
+                   class="px-3 py-1.5 rounded-lg text-sm transition-all duration-150"
+                   style="{{ request()->routeIs(explode('.', $item['route'])[0].'.*') || request()->routeIs($item['route'])
+                       ? 'background:var(--blue-bg);color:var(--royal);font-weight:600;'
+                       : 'color:var(--text-secondary);' }}">
+                    {{ $item['label'] }}
+                </a>
+                @endforeach
+
+                @if(auth()->user()->isSupervisor())
+                <a href="{{ route('users.index') }}"
+                   class="px-3 py-1.5 rounded-lg text-sm transition-all duration-150"
+                   style="{{ request()->routeIs('users.*')
+                       ? 'background:var(--gold-bg);color:var(--gold);font-weight:600;'
+                       : 'color:var(--text-secondary);' }}">
+                    ユーザー管理
+                </a>
+                @endif
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+            {{-- 右側 --}}
+            <div class="hidden md:flex items-center gap-3">
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+                {{-- ロールバッジ --}}
+                <span class="text-xs px-3 py-1 rounded-full font-semibold tracking-wide"
+                      style="background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-light)">
+                    {{ auth()->user()->isSupervisor() ? '責任者' : 'Trainer' }}
+                </span>
 
-                    <x-slot name="content">
-                        <x-dropdown-link href="{{ route('profile.edit') }}">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                {{-- ユーザードロップダウン --}}
+                <div class="relative" x-data="{ userOpen: false }">
+                    <button @click="userOpen = !userOpen"
+                            class="flex items-center gap-2 rounded-lg px-2 py-1 transition"
+                            style="color:var(--text-secondary)">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center
+                                    text-xs font-semibold text-white"
+                             style="background:linear-gradient(135deg,var(--royal),var(--navy))">
+                            {{ mb_substr(auth()->user()->name, 0, 1) }}
+                        </div>
+                        <span class="text-sm font-medium" style="color:var(--navy)">
+                            {{ auth()->user()->name }}
+                        </span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
 
-                        <!-- Authentication -->
+                    <div x-show="userOpen"
+                         @click.away="userOpen = false"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         class="absolute right-0 mt-2 w-52 rounded-xl py-1 z-50"
+                         style="background:#fff;border:1px solid var(--card-border);
+                                box-shadow:0 8px 24px rgba(13,39,68,0.10)">
+                        <div class="px-4 py-2.5" style="border-bottom:1px solid var(--card-border)">
+                            <p class="text-xs" style="color:var(--text-muted)">ログイン中</p>
+                            <p class="text-sm font-medium truncate" style="color:var(--navy)">
+                                {{ auth()->user()->email }}
+                            </p>
+                        </div>
+                        <a href="{{ route('profile.edit') }}"
+                           class="block px-4 py-2 text-sm transition"
+                           style="color:var(--text-secondary)"
+                           onmouseover="this.style.background='var(--surface)'"
+                           onmouseout="this.style.background=''">
+                            プロフィール設定
+                        </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
+                            <button type="submit"
+                                    class="w-full text-left px-4 py-2 text-sm transition"
+                                    style="color:#dc2626"
+                                    onmouseover="this.style.background='#fef2f2'"
+                                    onmouseout="this.style.background=''">
+                                ログアウト
+                            </button>
                         </form>
-                    </x-slot>
-                </x-dropdown>
+                    </div>
+                </div>
             </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            {{-- モバイルハンバーガー --}}
+            <button @click="open = !open" class="md:hidden p-2 rounded-lg"
+                    style="color:var(--text-muted)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!open" stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    <path x-show="open" stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
+    {{-- モバイルメニュー --}}
+    <div x-show="open" x-transition
+         style="border-top:1px solid var(--card-border);background:#fff">
+        <div class="px-4 py-3 space-y-1">
+            @foreach([
+                ['route' => 'dashboard',         'label' => 'ダッシュボード'],
+                ['route' => 'clients.index',     'label' => '顧客管理'],
+                ['route' => 'reservations.index','label' => '予約'],
+                ['route' => 'food-master.index', 'label' => '食品マスタ'],
+                ['route' => 'menus.index',       'label' => '種目マスタ'],
+            ] as $item)
+            <a href="{{ route($item['route']) }}"
+               class="block px-3 py-2 rounded-lg text-sm"
+               style="{{ request()->routeIs(explode('.', $item['route'])[0].'.*') || request()->routeIs($item['route'])
+                   ? 'background:var(--blue-bg);color:var(--royal);font-weight:600;'
+                   : 'color:var(--text-secondary);' }}">
+                {{ $item['label'] }}
+            </a>
+            @endforeach
+            @if(auth()->user()->isSupervisor())
+            <a href="{{ route('users.index') }}"
+               class="block px-3 py-2 rounded-lg text-sm"
+               style="color:var(--gold)">
+                ユーザー管理
+            </a>
+            @endif
+            <div style="border-top:1px solid var(--card-border);padding-top:8px;margin-top:8px">
+                <a href="{{ route('profile.edit') }}"
+                   class="block px-3 py-2 rounded-lg text-sm"
+                   style="color:var(--text-secondary)">
+                    プロフィール設定
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                    <button type="submit"
+                            class="w-full text-left px-3 py-2 rounded-lg text-sm"
+                            style="color:#dc2626">
+                        ログアウト
+                    </button>
                 </form>
             </div>
         </div>

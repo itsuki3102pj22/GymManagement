@@ -26,6 +26,19 @@ class DashboardController extends Controller
             ->orderBy('start_at')
             ->get();
 
+        // フォローアップが必要な顧客（7日以上未計測）
+        $needFollowUp = (clone $clientQuery)
+            ->where('is_active', true)
+            ->with(['latestBodyStat'])
+            ->get()
+            ->filter(function ($client) {
+                if (!$client->latestBodyStat) {
+                    return true; // 計測データがない
+                }
+                return $client->latestBodyStat->measured_at->diffInDays(now()) >= 7;
+            })
+            ->values();
+
         // サマリー数値
         $stats = [
             'total_clients'  => $clientQuery->count(),
@@ -36,6 +49,6 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        return view('dashboard', compact('stats', 'todayReservations', 'user'));
+        return view('dashboard', compact('stats', 'todayReservations', 'needFollowUp', 'user'));
     }
 }

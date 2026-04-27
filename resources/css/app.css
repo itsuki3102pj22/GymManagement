@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --navy:        #0d2744;
+  --royal:       #1a56a0;
+  --royal-light: #1e6abf;
+  --gold:        #b8952a;
+  --gold-light:  #e8d5a0;
+  --gold-bg:     #fdf6e3;
+  --blue-bg:     #f0f6ff;
+  --blue-border: #c5d8f0;
+  --page-bg:     #f0f4f8;
+  --card-bg:     #ffffff;
+  --card-border: #e8edf2;
+  --surface:     #f8fafc;
+  --text-primary:   #0d2744;
+  --text-secondary: #6b7f94;
+  --text-muted:     #8fa3b8;
+  --green:       #22c55e;
+  --green-dark:  #1a7a55;
+  --green-bg:    #f0fdf4;
+  --green-border:#86efac;
+  --amber:       #f59e0b;
+  --amber-bg:    #fffbeb;
+  --amber-border:#fde68a;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--page-bg);
+  color: var(--text-primary);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}

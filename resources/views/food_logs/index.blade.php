@@ -18,12 +18,6 @@
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
-            @if(session('success'))
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg text-sm">
-                {{ session('success') }}
-            </div>
-            @endif
-
             @forelse($logs as $log)
             <div class="bg-white rounded-xl shadow-sm p-5">
                 <div class="flex justify-between items-start mb-3">

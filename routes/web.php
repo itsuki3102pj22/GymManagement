@@ -51,6 +51,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'clients/{client}/workout-logs',
         [WorkoutLogController::class, 'store']
     )->name('workout-logs.store');
+    Route::put(
+        'clients/{client}/workout-logs/{workoutLog}',
+        [WorkoutLogController::class, 'update']
+    )->name('workout-logs.update');
     Route::delete(
         'clients/{client}/workout-logs/{workoutLog}',
         [WorkoutLogController::class, 'destroy']

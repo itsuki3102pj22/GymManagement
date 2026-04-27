@@ -1,77 +1,92 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">顧客一覧</h2>
+            <h2 class="font-display"
+                style="font-size:26px;font-weight:400;color:var(--navy);letter-spacing:1px">
+                顧客一覧
+            </h2>
             <a href="{{ route('clients.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+               class="px-4 py-2 rounded-lg text-sm font-semibold text-white"
+               style="background:var(--royal)">
                 + 新規登録
             </a>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">
-                {{ session('success') }}
-            </div>
-            @endif
-
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="rounded-2xl overflow-hidden bg-white"
+                 style="border:1px solid var(--card-border)">
                 <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th class="px-6 py-3 text-left">氏名</th>
-                            <th class="px-6 py-3 text-left">担当トレーナー</th>
-                            <th class="px-6 py-3 text-left">最終計測</th>
-                            <th class="px-6 py-3 text-left">現在の体重</th>
-                            <th class="px-6 py-3 text-left">目標体重</th>
-                            <th class="px-6 py-3 text-left">公開URL</th>
-                            <th class="px-6 py-3"></th>
+                    <thead>
+                        <tr style="background:var(--surface);border-bottom:1px solid var(--card-border)">
+                            @foreach(['氏名','担当トレーナー','最終計測','現在の体重','目標体重','公開URL',''] as $h)
+                            <th class="px-5 py-3 text-left text-xs font-semibold tracking-widest uppercase"
+                                style="color:var(--text-muted)">{{ $h }}</th>
+                            @endforeach
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         @forelse($clients as $client)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 font-medium text-gray-800">
-                                {{ $client->name }}
+                        <tr style="border-bottom:1px solid var(--card-border)"
+                            onmouseover="this.style.background='var(--surface)'"
+                            onmouseout="this.style.background=''">
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center
+                                                flex-shrink-0 font-display text-base"
+                                         style="background:var(--blue-bg);color:var(--royal);
+                                                border:1px solid var(--blue-border)">
+                                        {{ mb_substr($client->name, 0, 1) }}
+                                    </div>
+                                    <span class="font-semibold" style="color:var(--navy)">
+                                        {{ $client->name }}
+                                    </span>
+                                </div>
                             </td>
-                            <td class="px-6 py-4 text-gray-500">
+                            <td class="px-5 py-4" style="color:var(--text-secondary)">
                                 {{ $client->trainer->name }}
                             </td>
-                            <td class="px-6 py-4 text-gray-500">
-                                {{ $client->latestBodyStat
-                                    ? $client->latestBodyStat->measured_at->format('Y/m/d')
-                                    : '未計測' }}
+                            <td class="px-5 py-4">
+                                @if($client->latestBodyStat)
+                                <span style="color:var(--text-secondary)">
+                                    {{ $client->latestBodyStat->measured_at->format('Y/m/d') }}
+                                </span>
+                                @else
+                                <span class="text-xs px-2 py-0.5 rounded-full"
+                                      style="background:var(--amber-bg);color:#d97706">未計測</span>
+                                @endif
                             </td>
-                            <td class="px-6 py-4 text-gray-800">
+                            <td class="px-5 py-4 font-semibold" style="color:var(--navy)">
                                 {{ $client->latestBodyStat
-                                    ? $client->latestBodyStat->weight . ' kg'
-                                    : '—' }}
+                                    ? $client->latestBodyStat->weight . ' kg' : '—' }}
                             </td>
-                            <td class="px-6 py-4 text-gray-500">
+                            <td class="px-5 py-4 font-medium" style="color:var(--gold)">
                                 {{ $client->target_weight
-                                    ? $client->target_weight . ' kg'
-                                    : '—' }}
+                                    ? $client->target_weight . ' kg' : '—' }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-5 py-4">
                                 <a href="{{ route('public.progress', $client->uuid) }}"
                                    target="_blank"
-                                   class="text-blue-500 hover:underline text-xs">
-                                    リンクを開く ↗
+                                   class="text-xs transition" style="color:var(--royal)">
+                                    リンク ↗
                                 </a>
                             </td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-5 py-4 text-right">
                                 <a href="{{ route('clients.show', $client) }}"
-                                   class="text-blue-600 hover:underline text-sm">
+                                   class="text-xs font-semibold px-3 py-1.5 rounded-lg transition"
+                                   style="background:var(--blue-bg);color:var(--royal);
+                                          border:1px solid var(--blue-border)">
                                     詳細 →
                                 </a>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-400">
-                                顧客が登録されていません。
+                            <td colspan="7" class="px-5 py-12 text-center"
+                                style="color:var(--text-muted)">
+                                <p style="font-size:32px;margin-bottom:8px">👥</p>
+                                顧客が登録されていません
                             </td>
                         </tr>
                         @endforelse
