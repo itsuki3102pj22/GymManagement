@@ -12,11 +12,17 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FoodMasterController;
 use App\Http\Controllers\FoodLogController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LineWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // 顧客専用公開URL（認証不要）
 Route::get('/progress/{uuid}', [PublicProgressController::class, 'show'])
     ->name('public.progress');
+
+// LINE Webhook（認証・CSRF不要）
+Route::post('/api/webhook/line', [LineWebhookController::class, 'handle'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->name('webhook.line');
 
 // 認証必須ルート
 Route::middleware(['auth', 'verified'])->group(function () {
