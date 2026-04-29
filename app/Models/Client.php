@@ -55,7 +55,7 @@ class Client extends Model
 
     public function palLabel(): string
     {
-        return match($this->pal_level) {
+        return match ($this->pal_level) {
             1 => '低い (I)',
             2 => 'ふつう (II)',
             3 => '高い (III)',

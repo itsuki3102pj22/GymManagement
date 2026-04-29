@@ -15,6 +15,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(NutritionService::class);
         $this->app->singleton(BodyStatsService::class);
+        $this->app->singleton(LineFoodLogService::class);
+        $this->app->singleton(LineReservationService::class);
+        $this->app->singleton(LineReplyService::class);
     }
 
     /**

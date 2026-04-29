@@ -16,28 +16,28 @@ class PublicProgressController extends Controller
 
     public function show(string $uuid)
     {
-        // UUIDで顧客を特定（アクティブのみ）
+        // UUIDで顧客を特定
         $client = Client::where('uuid', $uuid)
-            ->where('is_active', true)
-            ->firstOrFail();
+        ->where('is_active', true)
+        ->firstOrFail();
 
         // 進捗グラフデータ
         $progress = $this->bodyStats->getProgressData($client);
 
         // BMI・EER算出
         $latestStat = $client->latestBodyStat;
-        $bmiData    = null;
-        $eer        = $this->nutrition->calcEer($client);
+        $bmiData = null;
+        $eer = $this->nutrition->calcEer($client);
 
         if ($latestStat) {
-            $bmi     = $this->nutrition->calcBmi(
+            $bmi = $this->nutrition->calcBmi(
                 $latestStat->weight,
                 $client->height
             );
-            $bmiData = $this->nutrition->bmiStatus($bmi, $client->age);
+            $bmiData = $this->nutrition->bmiStatus($bmi, $client->age());
         }
 
-        // 目標体重範囲
+        // 目標体重の範囲
         $targetRange = $this->nutrition->targetWeightRange(
             $client->height,
             $client->age
@@ -45,7 +45,7 @@ class PublicProgressController extends Controller
 
         // 最新PFCバランス
         $latestFood = $client->foodLogs()->latest('logged_at')->first();
-        $pfcStatus  = null;
+        $pfcStatus = null;
         if ($latestFood) {
             $pfcStatus = $this->nutrition->pfcStatus(
                 $latestFood->p_balance ?? 0,
@@ -59,7 +59,7 @@ class PublicProgressController extends Controller
             'progress',
             'bmiData',
             'eer',
-            'targetRange',
+            'targetRate',
             'latestStat',
             'pfcStatus',
         ));
