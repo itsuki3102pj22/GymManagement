@@ -1,4 +1,4 @@
-
+![GymManagement Dashboard](PGMS/dashboard.png)
 
 # 🏋️ GymManagement (PGMS: Personal Gym Management System)
 
