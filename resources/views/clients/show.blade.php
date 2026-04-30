@@ -679,11 +679,7 @@
         (function() {
             const actual = @json($progress['actual']);
             const forecast = @json($progress['forecast']);
-            const target = {
-                {
-                    $client - > target_weight ?? 'null'
-                }
-            };
+            const target = {{ $client->target_weight ?? 'null'}};
             const ctx = document.getElementById('weightChart');
             if (!ctx) return;
 

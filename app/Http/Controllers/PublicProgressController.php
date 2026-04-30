@@ -59,7 +59,7 @@ class PublicProgressController extends Controller
             'progress',
             'bmiData',
             'eer',
-            'targetRate',
+            'targetRange',
             'latestStat',
             'pfcStatus',
         ));
