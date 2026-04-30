@@ -34,7 +34,7 @@ class PublicProgressController extends Controller
                 $latestStat->weight,
                 $client->height
             );
-            $bmiData = $this->nutrition->bmiStatus($bmi, $client->age());
+            $bmiData = $this->nutrition->bmiStatus($bmi, $client->age);
         }
 
         // 目標体重の範囲
