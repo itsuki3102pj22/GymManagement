@@ -69,40 +69,47 @@
 
 ---
 
-### 4. 💳 予約・決済システム
+### 4. 📅 予約管理システム
 
 * **ハイブリッド予約**
   管理画面入力 + LINE仮予約フロー
 
-* **決済管理**
-  Laravel Cashier（Stripe）によるサブスク管理
+* **予約ステータス管理**
+  pending（仮予約） / confirmed（確定） / canceled（キャンセル）
+
+* **ダブルブッキング防止**
+  同一日時・同一トレーナー予約重複チェック
+
+* **フォローアップ管理**
+  未対応顧客 / 継続確認通知
+
 
 ---
 
 ## 🛠 技術スタック
 
-| 項目             | 内容                             |
-| -------------- | ------------------------------ |
-| Framework      | Laravel 11.x                   |
-| Language       | PHP 8.2+, Blade                |
-| Infrastructure | Docker / Laravel Sail          |
-| Database       | MySQL                          |
-| Frontend       | Tailwind CSS, Vite, Chart.js   |
-| API            | LINE Messaging API, Stripe API |
+| 項目             | 内容                           |
+| -------------- | ---------------------------- |
+| Framework      | Laravel 11.x                 |
+| Language       | PHP 8.2+, Blade              |
+| Infrastructure | Docker / Laravel Sail        |
+| Database       | MySQL                        |
+| Frontend       | Tailwind CSS, Vite, Chart.js |
+| API            | LINE Messaging API           |
+
 
 ---
 
 ## 📋 データベース設計
 
 主要テーブル構成：
-
 * `users`：管理者・トレーナー（Role管理）
 * `clients`：顧客情報、UUID、病歴メモ
 * `body_stats`：体重・BMI・体脂肪率など
 * `workout_logs`：トレーニング記録
 * `food_logs`：食事ログ（LINE連携）
 * `reservations`：予約管理
-* `payments`：決済履歴
+
 
 ---
 
@@ -131,3 +138,17 @@ composer install
 ```
 
 ---
+## 🖼 System Screenshots
+
+### 👥 Administrator Dashboard
+
+![Administrator Dashboard](PGMS/administrator.png)
+
+### 🍽 Client Food Logs
+
+![Client Food Logs](PGMS/clients_food-logs.png)
+
+### 📅 Reservation Management
+
+![Reservation Management](PGMS/reservations.png)
+
