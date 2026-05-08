@@ -2,142 +2,151 @@
 
 # 🏋️ GymManagement (PGMS: Personal Gym Management System)
 
-科学的根拠に基づいた指導をサポートする、パーソナルジム向けの専用管理アプリケーションです。
-トレーナーによる詳細な進捗管理と、LINE Messaging APIを活用した顧客への利便性提供を両立しています。
+A dedicated management application for personal gyms, designed to support evidence-based coaching and business efficiency.
+
+The system combines detailed client progress management with customer convenience through LINE Messaging API integration.
 
 ---
 
-## 🚀 プロジェクト概要
+## 🚀 Project Overview
 
-本システムは、厚生労働省の「日本人の食事摂取基準（2025年版）」および
-国立健康・栄養研究所の指標に基づき設計されています。
+This application is designed based on:
 
-単なる記録ツールではなく、
+- Dietary Reference Intakes for Japanese (2025 Edition) by the Ministry of Health, Labour and Welfare
+- Guidelines from the National Institute of Health and Nutrition
 
-* BMI目標値（18.5〜24.9）
-* 身体活動レベル（PAL）
+Rather than being just a tracking tool, the system supports scientific body transformation through automated calculations and data visualization.
 
-に応じたメンテナンスカロリー（EER）を自動算出し、
-データに基づいた科学的なボディメイクを支援します。
+Key features include:
 
----
-
-## ✨ 主な機能
-
-### 1. 🔐 権限別管理システム (Role Management)
-
-* **責任者 (Supervisor)**
-  ジム全体の売上、全トレーナー、全顧客データの閲覧・操作が可能
-
-* **トレーナー (Trainer)**
-  自身が担当する顧客のみを管理
-  （計測入力 / トレーニング記録 / 予約管理）
-
-* **顧客 (Client)**
-  LINEを通じた食事報告、予約確認
-  専用URLによる進捗閲覧
+- Automatic BMI evaluation (18.5–24.9 target range)
+- PAL (Physical Activity Level) based maintenance calorie calculation (EER)
+- Goal prediction based on weight change progress
+- Visualized training analytics using Chart.js
 
 ---
 
-### 2. 📊 進捗管理・自動計算ロジック
+## ✨ Main Features
 
-* **身体評価**
-  身長・体重からBMIを自動計算し、目標範囲内か評価
+### 1. 🔐 Role Management System
 
-* **エネルギー管理**
-  PALに基づいた推定エネルギー必要量（EER）を算出
+#### Supervisor
+- Access to overall gym sales
+- Manage all trainers and clients
+- Full system management permissions
 
-* **未来予測グラフ**
-  減量ペースから目標体重到達日を算出し、Chart.jsで可視化
+#### Trainer
+- Manage assigned clients only
+- Body measurement tracking
+- Training session management
+- Reservation management
 
-* **トレーニングボリューム可視化**
-  「重量 × 回数 × セット数」をグラフ化
-
----
-
-### 3. 🍽 食事・トレーニング記録
-
-* **LINE連携食事ログ**
-  テキストから料理名を抽出し、食品マスタと照合
-  → カロリー・PFCバランスを自動保存
-
-* **セッション記録**
-  種目 / 重量 / 回数 / 強度（強・中・弱）
-
-* **コンディションノート**
-  既往歴・体調（痛み / 睡眠など）を記録
+#### Client
+- Meal reporting through LINE
+- Reservation confirmation
+- Progress tracking via dedicated URL
 
 ---
 
-### 4. 📅 予約管理システム
+### 2. 📊 Progress Tracking & Automated Calculations
 
-* **ハイブリッド予約**
-  管理画面入力 + LINE仮予約フロー
+#### Body Evaluation
+- Automatic BMI calculation from height and weight
+- Health range evaluation
 
-* **予約ステータス管理**
-  pending（仮予約） / confirmed（確定） / canceled（キャンセル）
+#### Energy Management
+- Estimated Energy Requirement (EER) calculation based on PAL
 
-* **ダブルブッキング防止**
-  同一日時・同一トレーナー予約重複チェック
+#### Predictive Progress Graphs
+- Goal weight achievement prediction
+- Progress visualization with Chart.js
 
-* **フォローアップ管理**
-  未対応顧客 / 継続確認通知
-
-
----
-
-## 🛠 技術スタック
-
-| 項目             | 内容                           |
-| -------------- | ---------------------------- |
-| Framework      | Laravel 11.x                 |
-| Language       | PHP 8.2+, Blade              |
-| Infrastructure | Docker / Laravel Sail        |
-| Database       | MySQL                        |
-| Frontend       | Tailwind CSS, Vite, Chart.js |
-| API            | LINE Messaging API           |
-
+#### Training Volume Analytics
+- Visualization of:
+  - Weight
+  - Repetitions
+  - Sets
+  - Total training volume
 
 ---
 
-## 📋 データベース設計
+### 3. 🍽 Meal & Training Records
 
-主要テーブル構成：
-* `users`：管理者・トレーナー（Role管理）
-* `clients`：顧客情報、UUID、病歴メモ
-* `body_stats`：体重・BMI・体脂肪率など
-* `workout_logs`：トレーニング記録
-* `food_logs`：食事ログ（LINE連携）
-* `reservations`：予約管理
+#### LINE-integrated Meal Logging
+- Extracts meal names from text
+- Matches food database automatically
+- Saves calorie and PFC balance data
 
+#### Session Records
+- Exercise tracking
+- Weight / reps / intensity management
+
+#### Condition Notes
+- Injury history
+- Physical condition
+- Sleep and recovery tracking
 
 ---
 
-## 🔧 セットアップ（Laravel Sail）
+### 4. 📅 Reservation Management System
 
-### ① リポジトリ取得
+* **Hybrid Reservation Flow**  
+  Admin dashboard booking + LINE-based temporary reservation flow
+
+* **Reservation Status Management**  
+  `pending` (temporary) / `confirmed` / `canceled`
+
+* **Double Booking Prevention**  
+  Prevents duplicate reservations for the same trainer and time slot
+
+* **Follow-up Management**  
+  Unresponsive clients / continuation confirmation notifications
+
+---
+
+## 🛠 Tech Stack
+
+| Category | Technology |
+| --- | --- |
+| Framework | Laravel 11.x |
+| Language | PHP 8.2+, Blade |
+| Infrastructure | Docker / Laravel Sail |
+| Database | MySQL |
+| Frontend | Tailwind CSS, Vite, Chart.js |
+| API | LINE Messaging API |
+
+---
+
+## 📋 Database Design
+
+Main table structure:
+
+* `users` — Administrators & trainers (role management)
+* `clients` — Client information, UUID, medical history notes
+* `body_stats` — Weight, BMI, body fat percentage, etc.
+* `workout_logs` — Training records
+* `food_logs` — Meal logs (LINE integration)
+* `reservations` — Reservation management
+
+---
+
+## 🔧 Setup (Laravel Sail)
+
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/itsuki3102pj22/GymManagement.git
 cd GymManagement
-```
-
-### ② 環境構築
-
-```bash
+2. Environment Setup
 cp .env.example .env
 composer install
 ./vendor/bin/sail up -d
-```
-
-### ③ 初期設定
-
-```bash
+3. Initial Setup
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate --seed
-```
 
 ---
+
 ## 🖼 System Screenshots
 
 ### 👥 Administrator Dashboard
